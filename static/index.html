@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>泽鑫研究所 · AI电商主图工作台</title><link rel="stylesheet" href="/static/style.css"></head>
+<body>
+<div class="app">
+ <aside class="sidebar">
+   <div class="brand"><div class="brand-logo">ZX<span class="brand-dot"></span></div><div><strong>泽鑫研究所</strong><small>AI DESIGN LAB · STUDIO</small></div></div>
+   <div class="side-heading">工作空间</div>
+   <nav class="nav">
+     <button class="navitem active" id="navStudio"><span class="sym">◧</span>电商主图工厂<span class="nav-badge">BETA</span></button>
+     <button class="navitem" id="navHistory"><span class="sym">◴</span>历史任务</button>
+   </nav>
+   <div class="side-heading">生产原则</div>
+   <div class="rule"><span class="rule-icon">01</span><div>锁定原始商品<small>不重绘包装及文字</small></div></div>
+   <div class="rule"><span class="rule-icon">02</span><div>背景AI生成<small>按品类设计场景</small></div></div>
+   <div class="rule"><span class="rule-icon">03</span><div>文案精准排版<small>统一字形 · 统一字重</small></div></div>
+   <div class="sidebar-bottom"><span class="led" id="apiLed"></span><span id="apiStatus">正在检查服务状态…</span><small>云端安全运行 · API密钥仅由服务器保存</small></div>
+ </aside>
+ <div class="workspace">
+  <header class="topbar"><div class="crumb">设计工具 <span>/</span> 电商主图工厂 <span>/</span> <b>批量制作</b></div><div class="top-right"><span id="activeMode" class="pill">等待创建任务</span><button class="outline-btn" id="logoutButton" type="button" style="padding:8px 12px">退出登录</button><span class="avatar">ZX</span></div></header>
+  <main class="main">
+   <div class="intro"><div><div class="eyebrow">ZX / COMMERCE CREATIVE SYSTEM</div><h1>AI 电商主图<span>批量工厂</span></h1><p>上传整个商品文件夹，让每件商品拥有专属场景；文字保持一致，包装原样呈现。</p></div><div class="reference-chip"><img src="/assets/reference.png" alt="用户提供的参考主图"><div><strong>默认参考样式</strong><small>左侧文案 · 右侧产品<br>暖色自然光 · 宋体质感</small></div></div></div>
+   <section class="metrics"><div class="metric"><small>已导入商品</small><strong id="mTotal">00</strong></div><div class="metric"><small>已生成主图</small><strong id="mDone">00</strong></div><div class="metric"><small>待检查异常</small><strong id="mWarn">00</strong></div><div class="metric"><small>当前任务状态</small><strong id="mState" class="state-name">待上传</strong></div></section>
+   <div class="columns">
+    <section class="control-panel">
+     <div class="panel-title"><span class="num">01</span><div><h2>导入商品素材</h2><p>支持文件夹、多张商品图片及ZIP压缩包</p></div></div>
+     <div class="dropzone" id="dropZone" tabindex="0"><div class="upload-symbol">↥</div><strong>将图片或 ZIP 拖到这里</strong><p>或者使用下方按钮选择上传</p><div class="upload-buttons"><button id="chooseFolder" class="soft-btn">选择文件夹</button><button id="chooseFiles" class="soft-btn">选择图片</button><button id="chooseZip" class="soft-btn">导入 ZIP</button></div><small>单张 ≤25MB，单批 ≤300张；支持 PNG/JPG/WEBP</small></div>
+     <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
+     <input type="file" id="filesInput" accept="image/png,image/jpeg,image/webp,image/bmp" multiple hidden>
+     <input type="file" id="zipInput" accept=".zip,application/zip" multiple hidden>
+     <div class="selected" id="selectedRow" hidden><span id="selectedCount">已选0项</span><button class="text-link" id="clearSelected">清空</button></div>
+     <button class="primary-btn" id="createJob" disabled><span>＋</span> 创建批量任务</button>
+     <div class="panel-separator"></div>
+     <div class="panel-title"><span class="num">02</span><div><h2>AI 制作参数</h2><p>统一参考图的文字大小与视觉构图</p></div></div>
+     <div class="field"><label>运行模式</label><div class="segmented"><label><input type="radio" name="mode" value="demo" checked><span>演示背景 · 免费</span></label><label><input type="radio" name="mode" value="ai"><span>AI真实生图</span></label></div><p class="help" id="modeHelp">演示背景由程序生成，仅用于先验证布局和导出功能。</p></div>
+     <div class="field"><label>导出尺寸</label><div class="size-picker"><button class="size active" data-size="1125">1125 × 1125</button><button class="size" data-size="1200">1200 × 1200</button><button class="size" data-size="800">800 × 800</button></div></div>
+     <div class="two-fields"><div class="field"><label>主卖点字号 <small>基准1125px</small></label><div class="number-input"><input type="number" id="mainSize" value="70" min="40" max="90"><span>px</span></div></div><div class="field"><label>副卖点字号 <small>基准1125px</small></label><div class="number-input"><input type="number" id="subSize" value="26" min="16" max="40"><span>px</span></div></div></div>
+     <div class="field"><label>品牌LOGO</label><div class="logo-row"><img src="/assets/default-logo.png" id="logoThumb" alt="XTD LOGO"><div><strong>默认使用 XTD 标志</strong><small>可按任务替换为透明PNG</small><input type="file" id="logoFile" accept="image/*" hidden><button class="text-link" id="chooseLogo">替换LOGO</button></div></div></div>
+     <div class="checkline"><label><input type="checkbox" id="withLogo" checked><span>保留左上角品牌标志</span></label><span>固定</span></div>
+     <div class="checkline"><label><input type="checkbox" checked disabled><span>商品比例与包装保持原样</span></label><span>强制</span></div>
+     <div class="checkline"><label><input type="checkbox" checked disabled><span>文案使用程序排版，禁止AI生字</span></label><span>强制</span></div>
+     <div class="field csv-row"><label>自定义商品卖点表（可选）</label><label class="csv-upload">＋ 导入CSV / Excel另存CSV <input type="file" id="csvInput" accept=".csv" hidden></label><small id="csvStatus">不导入则自动生成候选卖点</small></div>
+     <button class="primary-btn run-btn" id="runJob" disabled><span>✦</span> 开始批量生成</button>
+     <div class="footnote">正式AI模式将调用在线视觉识别与生图API，产生API费用。所有AI候选卖点需人工复核。</div>
+    </section>
+    <section class="results-panel">
+     <div class="results-head"><div><h2>设计成果预览 <span id="resultCount">0 张</span></h2><p>逐张查看、修改主副卖点、重做背景，并批量打包下载</p></div><div class="head-buttons"><button class="outline-btn" id="reloadJob" disabled>↻ 刷新</button><button class="export-btn" id="exportZip" disabled>↓ 批量导出 ZIP</button></div></div>
+     <div class="progress-wrap" id="progressWrap" hidden><div class="progress-top"><span id="progressText">任务准备中…</span><strong id="progressPercent">0%</strong></div><div class="progress-bar"><span id="progressBar"></span></div></div>
+     <div class="gallery" id="gallery"><div class="empty-state"><div class="empty-art"><img src="/assets/reference.png" alt="最终效果参考图"><div class="float-label">STYLE REFERENCE<br><b>01 / MASTER</b></div></div><h3>从参考图开始，批量创造全新主图</h3><p>先导入商品文件夹，创建任务后开始生成。这里会展示全部成品及审核状态。</p></div></div>
+     <div class="tip"><span>✳</span><div><strong>质量原则</strong><p>当上传的是复杂背景商品图、无法可靠抠图时，系统会标记异常，暂不把不完整商品强行合成。建议提供透明PNG或安装可选抠图组件。</p></div></div>
+    </section>
+   </div>
+  </main>
+ </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="modal" class="modal" hidden><div class="shade" id="closeShade"></div><div class="modal-body"><div class="modal-head"><div><span class="eyebrow">PRODUCT INSPECTOR</span><h2 id="modalTitle">商品审核</h2></div><button id="closeModal" class="close-x">✕</button></div><div class="modal-layout"><div class="modal-preview"><img id="modalImage" alt="主图预览"><div class="preview-warning" id="modalWarn"></div></div><div class="modal-fields"><div class="field"><label>主卖点（换行分两行）</label><textarea id="editMain" rows="3"></textarea></div><div class="field"><label>副卖点</label><textarea id="editSub" rows="3"></textarea></div><div class="field"><label>文字颜色</label><div class="color-picker"><input type="color" id="editColor"><span id="colorVal">#2f4e37</span></div></div><div class="review-actions"><button class="primary-btn" id="saveEdit">保存文案并重新合成</button><button class="outline-btn" id="regenBg">重新生成背景</button><a id="downloadSingle" class="outline-btn link-btn" download>↓ 下载单张 PNG</a></div><small>修改文案只需重新排版，通常不会再次调用生图接口。重新生成背景会在AI模式下产生新的API调用费用。</small></div></div></div></div>
+<script src="/static/app.js"></script></body></html>
